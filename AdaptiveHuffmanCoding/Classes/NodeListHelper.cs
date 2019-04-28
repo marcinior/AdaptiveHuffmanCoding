@@ -29,5 +29,10 @@ namespace AdaptiveHuffmanCoding.Classes
 
             return null;
         }
+
+        public static string GetLetterBinaryCode(this List<Node> nodes, string letter)
+        {
+            return nodes.Single(n => n.NodeKey.Equals(letter))?.BinaryCode;
+        }
     }
 }

@@ -8,6 +8,8 @@
         public int NodeValue { get; set; }
         public string NodeKey { get; set; }
         public int Id { get; set; }
+        public string BinaryCode { get; set; }
+        public double OccurenceProbability { get; set; }
 
         public Node(Node parentNode, ref Node leftChild, ref Node rightChild, int nodeValue, string nodeKey, int id)
         {

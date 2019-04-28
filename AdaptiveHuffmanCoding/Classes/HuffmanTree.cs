@@ -9,7 +9,10 @@ namespace AdaptiveHuffmanCoding.Classes
     {
         private Node nytNode;
         private List<Node> nodes;
-        private string enteredString;
+
+        public string EnteredString { get; private set; }
+        public double Entropy { get; private set; }
+        public double AverageCodewordLength { get; private set; }
 
         public HuffmanTree()
         {
@@ -24,64 +27,98 @@ namespace AdaptiveHuffmanCoding.Classes
 
         public void AddLetter(string letter)
         {
-            enteredString += letter;
+            EnteredString += letter;
+            Node node = null;
 
             if (nodes.TreeContainsLetter(letter))
             {
-                Node nodeToUpdate = nodes.GetNodeByLetter(letter);
-                nodeToUpdate.NodeValue++;
+                node = nodes.GetNodeByLetter(letter);
+                node.NodeValue++;
                 CorrectTheTree();
-                UpdateParentNodeValues(letter,false);
+                UpdateParentNodeValues(letter, false);
             }
             else
             {
-                Node newNode = new Node();
-                newNode.NodeKey = letter;
-                newNode.NodeValue = 1;
-                newNode.Id = 1;
+                node = new Node();
+                node.NodeKey = letter;
+                node.NodeValue = 1;
+                node.Id = 1;
+                node.OccurenceProbability = 1 / EnteredString.Length;
 
-                Node interiorNode = new Node(nytNode.ParentNode, ref nytNode, ref newNode, 1, string.Empty, 2);
+                Node interiorNode = new Node(nytNode.ParentNode, ref nytNode, ref node, 1, string.Empty, 2);
 
                 if (interiorNode.ParentNode != null)
                     interiorNode.ParentNode.LeftChild = interiorNode;
 
                 nodes.Where(n => n.Id != 0).ToList().ForEach(n => n.Id += 2);
-                nodes.Add(newNode);
+                nodes.Add(node);
                 nodes.Add(interiorNode);
                 UpdateParentNodeValues(letter, true);
             }
+
+            UpdateLettersBinaryCodeAndOccurenceProbabilty();
+        }
+
+        private void UpdateLettersBinaryCodeAndOccurenceProbabilty()
+        {
+            var letterNodes = nodes.Where(n => n.IsCharNode && !n.NodeKey.Equals("NYT")).Distinct();
+            Entropy = 0;
+            AverageCodewordLength = 0;
+
+            foreach(var node in letterNodes)
+            {
+                node.BinaryCode = GetEncodedLetter(node.NodeKey);
+                node.OccurenceProbability = (double)node.NodeValue / EnteredString.Length;
+                //Console.WriteLine(node.NodeKey + " - " + node.OccurenceProbability + " - " + node.OccurenceProbability);
+                UpdateEntropy(node);
+                UpdateAverageCodewordLength(node);
+            }
+        }
+
+        private void UpdateEntropy(Node node)
+        {
+            Entropy += node.OccurenceProbability * Math.Log((1 / node.OccurenceProbability), 2);
+        }
+
+        private void UpdateAverageCodewordLength(Node node)
+        {
+            AverageCodewordLength += node.OccurenceProbability * node.BinaryCode.Length;
         }
 
         public string GetEncodedString()
         {
             StringBuilder encodedStringBuilder = new StringBuilder();
 
-            foreach(var letter in enteredString.ToCharArray())
+            foreach (var letter in EnteredString.ToCharArray())
             {
-                Node currentNode = nodes.GetNodeByLetter(letter.ToString());
-                string binaryString = Node.IsLeftChild(currentNode) ? "0" : "1";
-
-                currentNode = currentNode.ParentNode;
-
-                while (currentNode.HasParent)
-                {
-                    binaryString += Node.IsLeftChild(currentNode) ? "0" : "1";
-                    currentNode = currentNode.ParentNode;
-                }
-
-                char[] charArray = binaryString.ToCharArray();
-                Array.Reverse(charArray);
-                encodedStringBuilder.Append(new string(charArray));
+                encodedStringBuilder.Append(nodes.GetLetterBinaryCode(letter.ToString()));
             }
 
             return encodedStringBuilder.ToString();
         }
+
+        private string GetEncodedLetter(string letter)
+        {
+            Node currentNode = nodes.GetNodeByLetter(letter.ToString());
+            string binaryString = Node.IsLeftChild(currentNode) ? "0" : "1";
+
+            currentNode = currentNode.ParentNode;
+
+            while (currentNode.HasParent)
+            {
+                binaryString += Node.IsLeftChild(currentNode) ? "0" : "1";
+                currentNode = currentNode.ParentNode;
+            }
+
+            char[] charArray = binaryString.ToCharArray();
+            Array.Reverse(charArray);
+            return new string(charArray);
+        }
+
         private void CorrectTheTree()
         {
-
-            while(!IsTreeValid(out int errorNodeIndex))
+            while (!IsTreeValid(out int errorNodeIndex))
             {
-
                 Node errorNode = nodes[errorNodeIndex];
                 Node nodeToSwap = nodes.GetNodeToSwap(errorNodeIndex);
                 Node tempNode = new Node
@@ -121,6 +158,7 @@ namespace AdaptiveHuffmanCoding.Classes
                 firstNode.ParentNode.RightChild = secondNode;
             }
         }
+
         private void UpdateParentNodeValues(string letter, bool isNewNode)
         {
             Node nodeToUpdate = nodes.GetNodeByLetter(letter);
@@ -140,9 +178,9 @@ namespace AdaptiveHuffmanCoding.Classes
         {
             nodes = nodes.OrderBy(n => n.Id).ToList();
 
-            for(int i = 0; i < nodes.Count -2; i++)
+            for (int i = 0; i < nodes.Count - 2; i++)
             {
-                if(nodes[i+1].NodeValue < nodes[i].NodeValue)
+                if (nodes[i + 1].NodeValue < nodes[i].NodeValue)
                 {
                     errorNodeIndex = i;
                     return false;
@@ -157,10 +195,10 @@ namespace AdaptiveHuffmanCoding.Classes
         {
             var nodes = this.nodes.OrderByDescending(n => n.Id).ToList();
 
-            for(int i = 0; i < nodes.Count; i++)
+            for (int i = 0; i < nodes.Count; i++)
             {
                 Console.WriteLine($"Key: {nodes[i].NodeKey} Value: {nodes[i].NodeValue} Id: {nodes[i].Id} LeftChild: {nodes[i].LeftChild?.Id} RightChild: {nodes[i].RightChild?.Id}\t");
-            }         
+            }
         }
     }
 }

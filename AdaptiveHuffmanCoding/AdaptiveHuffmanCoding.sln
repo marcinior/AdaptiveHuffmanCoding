@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdaptiveHuffmanCoding", "AdaptiveHuffmanCoding.csproj", "{ECFAEB82-BF0B-4306-8B31-022D3B776AE1}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AdaptiveHuffmanTree", "..\AdaptiveHuffmanTree\AdaptiveHuffmanTree.csproj", "{12349082-FC72-4955-A5F0-ABA4D546A992}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{ECFAEB82-BF0B-4306-8B31-022D3B776AE1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{ECFAEB82-BF0B-4306-8B31-022D3B776AE1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{ECFAEB82-BF0B-4306-8B31-022D3B776AE1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{12349082-FC72-4955-A5F0-ABA4D546A992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{12349082-FC72-4955-A5F0-ABA4D546A992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{12349082-FC72-4955-A5F0-ABA4D546A992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{12349082-FC72-4955-A5F0-ABA4D546A992}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
