@@ -59,20 +59,30 @@ namespace AdaptiveHuffmanCoding.Classes
             UpdateLettersBinaryCodeAndOccurenceProbabilty();
         }
 
+        public IList<Node> GetLettersNodes() => nodes.Where(n => n.IsCharNode && !n.NodeKey.Equals("NYT")).ToList();
+        public IList<Node> GetNodes() => nodes.OrderByDescending(n => n.Id).ToList();
+
         private void UpdateLettersBinaryCodeAndOccurenceProbabilty()
         {
-            var letterNodes = nodes.Where(n => n.IsCharNode && !n.NodeKey.Equals("NYT")).Distinct();
+            var letterNodes = nodes.Where(n => n.IsCharNode && !n.NodeKey.Equals("NYT"));
             Entropy = 0;
             AverageCodewordLength = 0;
 
             foreach(var node in letterNodes)
             {
                 node.BinaryCode = GetEncodedLetter(node.NodeKey);
+                node.Depth = node.BinaryCode.Length;
+                node.ParentNode.Depth = node.Depth - 1;
                 node.OccurenceProbability = (double)node.NodeValue / EnteredString.Length;
-                //Console.WriteLine(node.NodeKey + " - " + node.OccurenceProbability + " - " + node.OccurenceProbability);
                 UpdateEntropy(node);
                 UpdateAverageCodewordLength(node);
             }
+
+            Node rootNode = nodes.GetRootNode();
+            rootNode.Depth = 0;
+            rootNode.LeftChild.Depth = 1;
+            rootNode.RightChild.Depth = 1;
+            nytNode.Depth = nytNode.ParentNode.RightChild.Depth;
         }
 
         private void UpdateEntropy(Node node)
@@ -191,13 +201,20 @@ namespace AdaptiveHuffmanCoding.Classes
             return true;
         }
 
-        public void PrintTree()
+        public void PrintTree() //For test purposes
         {
             var nodes = this.nodes.OrderByDescending(n => n.Id).ToList();
+            int depth = 0;
 
             for (int i = 0; i < nodes.Count; i++)
             {
-                Console.WriteLine($"Key: {nodes[i].NodeKey} Value: {nodes[i].NodeValue} Id: {nodes[i].Id} LeftChild: {nodes[i].LeftChild?.Id} RightChild: {nodes[i].RightChild?.Id}\t");
+
+                if (nodes[i].Depth != depth)
+                    Console.WriteLine("-----------");
+
+                Console.WriteLine($"Key: {nodes[i].NodeKey} Value: {nodes[i].NodeValue} Id: {nodes[i].Id} LeftChild: {nodes[i].LeftChild?.Id} RightChild: {nodes[i].RightChild?.Id}");
+
+                depth = nodes[i].Depth;
             }
         }
     }

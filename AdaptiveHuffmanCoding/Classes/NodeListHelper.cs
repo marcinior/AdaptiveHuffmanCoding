@@ -34,5 +34,7 @@ namespace AdaptiveHuffmanCoding.Classes
         {
             return nodes.Single(n => n.NodeKey.Equals(letter))?.BinaryCode;
         }
+
+        public static Node GetRootNode(this List<Node> nodes) => nodes.Single(n => !n.HasParent);
     }
 }
