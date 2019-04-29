@@ -1,11 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using AdaptiveHuffmanCoding.Classes;
 
@@ -21,8 +16,8 @@ namespace AdaptiveHuffmanTree
         {
             InitializeComponent();
             huffmanTree = new HuffmanTree();
-            tree = new Bitmap(treePictureBox.ClientSize.Width, 
-                treePictureBox.ClientSize.Height, 
+            tree = new Bitmap(treePictureBox.ClientSize.Width,
+                treePictureBox.ClientSize.Height,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         }
 
@@ -30,13 +25,47 @@ namespace AdaptiveHuffmanTree
         {
             if (!isInputValid())
                 return;
+            try
+            {
+                addLetter();
+                drawTree(huffmanTree.GetNodes());
+            }
+            catch (Exception ex)
+            {
+                DialogResult result = MessageBox.Show(ex.Message, Properties.Resources.ErrorDialogName, MessageBoxButtons.YesNo);
 
-            addLetter();
-            drawTree(huffmanTree.GetNodes());
+                if(result == DialogResult.Yes)
+                {
+                    graphics.Clear(Color.White);
+                    treePictureBox.Refresh();
+                    enteredTextBox.Text = null;
+                    encodedTextBox.Text = null;
+                    entropyTextBox.Text = null;
+                    averageCodewordLengthTextBox.Text = null;
+                    lettersListView.Items.Clear();
+                    huffmanTree = new HuffmanTree();
+                }
+                else
+                {
+                    this.Close();
+                }
+            }
+
         }
+
+        private void clearApp()
+        {
+            treePictureBox.BackColor = Color.White;
+        }
+
         private void addLetter()
         {
             huffmanTree.AddLetter(letterToEncodeTextBox.Text);
+            string encodedString = huffmanTree.GetEncodedString();
+
+            if (encodedString.Length > 70)
+                throw new Exception(Properties.Resources.EncodedTextLenghthErrorMessage);
+
             enteredTextBox.Text = huffmanTree.EnteredString;
             encodedTextBox.Text = huffmanTree.GetEncodedString();
             entropyTextBox.Text = huffmanTree.Entropy.ToString();
@@ -66,9 +95,9 @@ namespace AdaptiveHuffmanTree
 
         private bool isInputValid()
         {
-            if (letterToEncodeTextBox.Text.Equals(string.Empty) || !char.IsLetterOrDigit(letterToEncodeTextBox.Text[0]))
+            if (letterToEncodeTextBox.Text.Equals(string.Empty) || !char.IsLetter(letterToEncodeTextBox.Text[0]))
             {
-                MessageBox.Show("Enter digit or letter", "Entered value not valid");
+                MessageBox.Show(Properties.Resources.InvalidInputErrorMessage, Properties.Resources.ErrorDialogName);
                 return false;
             }
 
@@ -80,19 +109,27 @@ namespace AdaptiveHuffmanTree
             if (e.KeyCode != Keys.Enter || !isInputValid())
                 return;
 
-            addLetter();
-            drawTree(huffmanTree.GetNodes());
+            try
+            {
+                addLetter();
+                drawTree(huffmanTree.GetNodes());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, Properties.Resources.ErrorDialogName);
+            }
         }
 
         private void drawTree(IList<Node> nodes)
         {
+            int[] lineLengths = new int[] { 340, 170, 105, 50, 30, 20 };
             graphics = Graphics.FromImage(tree);
             graphics.Clear(Color.White);
             int height = 0;
             int width = treePictureBox.ClientSize.Width / 2;
             int depth = 0;
-            int diametr = 40;
-            int parentNodeWidthDifference = 200;
+            int diametr = 30;
+            int parentNodeWidthDifference = 340;
             int parentNodeHeightDifference = 70;
             List<Tuple<Point, Point >> neighborNodes = new List<Tuple<Point, Point>>();
             
@@ -107,33 +144,33 @@ namespace AdaptiveHuffmanTree
                 {
                     graphics.DrawNode(width, height, diametr, text);
                     node.PosX = width;
+                    node.PosY = height;
                     continue;
                 }
 
-                if(node.Depth > 1)
-                {
-                    parentNodeWidthDifference = 100;
-                }
-
                 if (node.Depth != depth)
+                {
                     height += parentNodeHeightDifference;
+                    parentNodeWidthDifference = lineLengths[node.Depth - 1];
+                }
 
                 if (Node.IsLeftChild(node))
                 {
                     width = node.ParentNode.PosX - parentNodeWidthDifference;
                     node.PosX = width;
-                    graphics.DrawNode(width, height, diametr, text);
+                    node.PosY = height;
                 }
                 else
                 {
                     width = node.ParentNode.PosX + parentNodeWidthDifference;
                     node.PosX = width;
-                    graphics.DrawNode(width, height, diametr, text);
+                    node.PosY = height;
                 }
 
-                neighborNodes.Add(new Tuple<Point, Point>(
-                new Point(node.ParentNode.PosX + diametr / 2, node.ParentNode.Depth * parentNodeHeightDifference + diametr),
-                new Point(node.PosX + diametr / 2, node.Depth * parentNodeHeightDifference)));
+                Point point1 = new Point(node.ParentNode.PosX + diametr / 2, node.ParentNode.Depth * parentNodeHeightDifference + diametr);
+                Point point2 = new Point(node.PosX + diametr / 2, node.Depth * parentNodeHeightDifference);
+                graphics.DrawNode(node.PosX, node.PosY, diametr, text);
+                neighborNodes.Add(new Tuple<Point, Point>(point1, point2));
                 depth = node.Depth;
             }
 

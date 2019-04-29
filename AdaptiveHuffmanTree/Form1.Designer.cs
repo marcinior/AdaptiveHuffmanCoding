@@ -114,15 +114,15 @@ namespace AdaptiveHuffmanTree
             // averageCodewordLengthTextBox
             // 
             this.averageCodewordLengthTextBox.Enabled = false;
-            this.averageCodewordLengthTextBox.Location = new System.Drawing.Point(465, 120);
+            this.averageCodewordLengthTextBox.Location = new System.Drawing.Point(540, 120);
             this.averageCodewordLengthTextBox.Name = "averageCodewordLengthTextBox";
-            this.averageCodewordLengthTextBox.Size = new System.Drawing.Size(216, 28);
+            this.averageCodewordLengthTextBox.Size = new System.Drawing.Size(192, 28);
             this.averageCodewordLengthTextBox.TabIndex = 8;
             // 
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(461, 96);
+            this.label6.Location = new System.Drawing.Point(536, 93);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(197, 21);
             this.label6.TabIndex = 7;
@@ -131,15 +131,15 @@ namespace AdaptiveHuffmanTree
             // entropyTextBox
             // 
             this.entropyTextBox.Enabled = false;
-            this.entropyTextBox.Location = new System.Drawing.Point(465, 52);
+            this.entropyTextBox.Location = new System.Drawing.Point(540, 52);
             this.entropyTextBox.Name = "entropyTextBox";
-            this.entropyTextBox.Size = new System.Drawing.Size(216, 28);
+            this.entropyTextBox.Size = new System.Drawing.Size(192, 28);
             this.entropyTextBox.TabIndex = 6;
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(461, 28);
+            this.label5.Location = new System.Drawing.Point(536, 28);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(65, 21);
             this.label5.TabIndex = 5;
@@ -193,7 +193,7 @@ namespace AdaptiveHuffmanTree
             this.encodedTextBox.Enabled = false;
             this.encodedTextBox.Location = new System.Drawing.Point(6, 120);
             this.encodedTextBox.Name = "encodedTextBox";
-            this.encodedTextBox.Size = new System.Drawing.Size(420, 28);
+            this.encodedTextBox.Size = new System.Drawing.Size(507, 28);
             this.encodedTextBox.TabIndex = 3;
             // 
             // label4
@@ -210,7 +210,7 @@ namespace AdaptiveHuffmanTree
             this.enteredTextBox.Enabled = false;
             this.enteredTextBox.Location = new System.Drawing.Point(10, 52);
             this.enteredTextBox.Name = "enteredTextBox";
-            this.enteredTextBox.Size = new System.Drawing.Size(416, 28);
+            this.enteredTextBox.Size = new System.Drawing.Size(503, 28);
             this.enteredTextBox.TabIndex = 1;
             // 
             // label3

@@ -12,6 +12,7 @@
         public double OccurenceProbability { get; set; }
         public int Depth { get; set; }
         public int PosX { get; set; }
+        public int PosY { get; set; }
 
         public Node(Node parentNode, ref Node leftChild, ref Node rightChild, int nodeValue, string nodeKey, int id)
         {
