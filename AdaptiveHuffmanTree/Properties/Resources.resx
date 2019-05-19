@@ -123,6 +123,9 @@
   <data name="ErrorDialogName" xml:space="preserve">
     <value>Error occurred</value>
   </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Clear entered text (YES) or exit app (NO).</value>
+  </data>
   <data name="InvalidInputErrorMessage" xml:space="preserve">
     <value>Entered value is invalid. Enter onlu letters.</value>
   </data>

@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using AdaptiveHuffmanCoding.Classes;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Globalization;
+using System.Linq;
 
 namespace AdaptiveHuffmanTree
 {
@@ -11,70 +15,74 @@ namespace AdaptiveHuffmanTree
         private HuffmanTree huffmanTree;
         private Graphics graphics;
         private Bitmap tree;
+        private Tuple<int[],int> smallTreeEdgeLengths;
+        private Tuple<int[], int> mediumTreeEgdeLenghts;
+        private Tuple<int[], int> bigTreeEdgeLenghts;
 
         public Form1()
         {
             InitializeComponent();
+            Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo("en-US");
             huffmanTree = new HuffmanTree();
+            smallTreeEdgeLengths = new Tuple<int[], int>(new int[] { 340, 165, 100, 50, 30}, 70);
+            mediumTreeEgdeLenghts = new Tuple<int[], int>(new int[] { 285, 145, 70, 55, 40, 20, 15, 15 }, 60);
+            bigTreeEdgeLenghts = new Tuple<int[], int>(new int[] { 200, 130, 110, 160, 60, 40, 25, 15, 15 }, 50);
+            
             tree = new Bitmap(treePictureBox.ClientSize.Width,
                 treePictureBox.ClientSize.Height,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         }
 
-        private void addLetterButton_Click(object sender, EventArgs e)
+        private async void sendTextButton_Click(object sender, EventArgs e)
         {
             if (!isInputValid())
                 return;
-            try
-            {
-                addLetter();
-                drawTree(huffmanTree.GetNodes());
-            }
-            catch (Exception ex)
-            {
-                DialogResult result = MessageBox.Show(ex.Message, Properties.Resources.ErrorDialogName, MessageBoxButtons.YesNo);
 
-                if(result == DialogResult.Yes)
-                {
-                    graphics.Clear(Color.White);
-                    treePictureBox.Refresh();
-                    enteredTextBox.Text = null;
-                    encodedTextBox.Text = null;
-                    entropyTextBox.Text = null;
-                    averageCodewordLengthTextBox.Text = null;
-                    lettersListView.Items.Clear();
-                    huffmanTree = new HuffmanTree();
-                }
-                else
-                {
-                    this.Close();
-                }
-            }
-
+            handleSendTextButtonClick();
         }
 
         private void clearApp()
         {
             treePictureBox.BackColor = Color.White;
+            graphics.Clear(Color.White);
+            treePictureBox.Refresh();
+            enteredTextBox.Text = null;
+            encodedTextBox.Text = null;
+            entropyTextBox.Text = null;
+            averageCodewordLengthTextBox.Text = null;
+            lettersListView.Items.Clear();
+            huffmanTree = new HuffmanTree();
         }
 
-        private void addLetter()
+        private async Task sendLetters()
         {
-            huffmanTree.AddLetter(letterToEncodeTextBox.Text);
-            string encodedString = huffmanTree.GetEncodedString();
+            char[] inputTextWithourControlSequences = letterToEncodeTextBox.Text.Where(c => !char.IsControl(c)).ToArray();
 
-            if (encodedString.Length > 70)
-                throw new Exception(Properties.Resources.EncodedTextLenghthErrorMessage);
+            foreach (var letter in inputTextWithourControlSequences)
+            {
+                huffmanTree.AddLetter(letter.ToString());
+                string encodedString = huffmanTree.GetEncodedString();
 
-            enteredTextBox.Text = huffmanTree.EnteredString;
-            encodedTextBox.Text = huffmanTree.GetEncodedString();
-            entropyTextBox.Text = huffmanTree.Entropy.ToString();
-            averageCodewordLengthTextBox.Text = huffmanTree.AverageCodewordLength.ToString();
-            insertLettersToListView(huffmanTree.GetLettersNodes());
+                enteredTextBox.Text = huffmanTree.EnteredString;
+                encodedTextBox.Text = huffmanTree.GetEncodedString();
+                entropyTextBox.Text = huffmanTree.Entropy.ToString();
+                averageCodewordLengthTextBox.Text = huffmanTree.AverageCodewordLength.ToString();
+                insertLettersToListView(huffmanTree.GetLettersNodes());
+
+                if(drawTreeInRealTimeCheckbox.Checked)
+                    drawTree(huffmanTree.GetNodes());
+
+                await Task.Delay(500);
+            }
+
+            if(!drawTreeInRealTimeCheckbox.Checked)
+                drawTree(huffmanTree.GetNodes());
 
             letterToEncodeTextBox.Clear();
             letterToEncodeTextBox.Focus();
+            clearButton.Enabled = true;
         }
+
         private void insertLettersToListView(IList<Node> nodes)
         {
             lettersListView.Items.Clear();
@@ -109,20 +117,13 @@ namespace AdaptiveHuffmanTree
             if (e.KeyCode != Keys.Enter || !isInputValid())
                 return;
 
-            try
-            {
-                addLetter();
-                drawTree(huffmanTree.GetNodes());
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, Properties.Resources.ErrorDialogName);
-            }
+            handleSendTextButtonClick();
         }
 
         private void drawTree(IList<Node> nodes)
         {
-            int[] lineLengths = new int[] { 340, 170, 105, 50, 30, 20 };
+            var treeDimensions = getTreeDimensions();
+            int[] lineLengths = treeDimensions.Item1;
             graphics = Graphics.FromImage(tree);
             graphics.Clear(Color.White);
             int height = 0;
@@ -130,9 +131,9 @@ namespace AdaptiveHuffmanTree
             int depth = 0;
             int diametr = 30;
             int parentNodeWidthDifference = 340;
-            int parentNodeHeightDifference = 70;
+            int parentNodeHeightDifference = treeDimensions.Item2;
             List<Tuple<Point, Point >> neighborNodes = new List<Tuple<Point, Point>>();
-            
+
             foreach(Node node in nodes)
             {
                 string text = node.IsCharNode ? node.NodeKey + ":" + node.NodeValue : node.NodeValue.ToString();
@@ -151,6 +152,7 @@ namespace AdaptiveHuffmanTree
                 if (node.Depth != depth)
                 {
                     height += parentNodeHeightDifference;
+                    Console.WriteLine(lineLengths.Length);
                     parentNodeWidthDifference = lineLengths[node.Depth - 1];
                 }
 
@@ -188,9 +190,56 @@ namespace AdaptiveHuffmanTree
             }
         }
 
+        private Tuple<int[], int> getTreeDimensions()
+        {
+            if (huffmanTree.Depth <= 5)
+                return smallTreeEdgeLengths;
+
+            if (huffmanTree.Depth <= 7)
+                return mediumTreeEgdeLenghts;
+
+            return bigTreeEdgeLenghts;
+        }
+
         private void treePictureBox_Paint(object sender, PaintEventArgs e)
         {
             e.Graphics.DrawImage(tree, 0, 0, tree.Width, tree.Height);
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            clearApp();
+        }
+
+        private async void handleSendTextButtonClick()
+        {
+            try
+            {
+                clearButton.Enabled = false;
+                sendTextButton.Enabled = false;
+                drawTreeInRealTimeCheckbox.Enabled = false;
+
+                await sendLetters();
+
+                clearButton.Enabled = true;
+                sendTextButton.Enabled = true;
+                drawTreeInRealTimeCheckbox.Enabled = true;
+
+            }
+            catch (Exception ex)
+            {
+                DialogResult result = MessageBox.Show(ex.Message + Properties.Resources.ErrorMessage,
+                                                        Properties.Resources.ErrorDialogName, MessageBoxButtons.YesNo);
+
+                if (result == DialogResult.Yes)
+                {
+                    clearApp();
+                }
+                else
+                {
+                    this.Close();
+                }
+            }
         }
     }
 }

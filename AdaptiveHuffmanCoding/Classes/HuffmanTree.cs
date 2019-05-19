@@ -107,6 +107,8 @@ namespace AdaptiveHuffmanCoding.Classes
             return encodedStringBuilder.ToString();
         }
 
+        public int Depth => nodes.Max(n => n.Depth);
+
         private string GetEncodedLetter(string letter)
         {
             Node currentNode = nodes.GetNodeByLetter(letter.ToString());

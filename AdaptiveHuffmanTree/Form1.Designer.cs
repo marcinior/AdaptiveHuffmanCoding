@@ -33,7 +33,9 @@ namespace AdaptiveHuffmanTree
             this.letterToEncodeTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.clearButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.drawTreeInRealTimeCheckbox = new System.Windows.Forms.CheckBox();
             this.averageCodewordLengthTextBox = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.entropyTextBox = new System.Windows.Forms.TextBox();
@@ -50,7 +52,7 @@ namespace AdaptiveHuffmanTree
             this.enteredTextBox = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.addLetterButton = new System.Windows.Forms.Button();
+            this.sendTextButton = new System.Windows.Forms.Button();
             this.treePictureBox = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -61,10 +63,12 @@ namespace AdaptiveHuffmanTree
             // 
             this.letterToEncodeTextBox.Location = new System.Drawing.Point(7, 40);
             this.letterToEncodeTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.letterToEncodeTextBox.MaxLength = 1;
+            this.letterToEncodeTextBox.Multiline = true;
             this.letterToEncodeTextBox.Name = "letterToEncodeTextBox";
-            this.letterToEncodeTextBox.Size = new System.Drawing.Size(203, 28);
+            this.letterToEncodeTextBox.Size = new System.Drawing.Size(203, 113);
             this.letterToEncodeTextBox.TabIndex = 0;
+            this.letterToEncodeTextBox.Text = "She sells seashells by the seashore. The shells she sells are surely seashells. S" +
+    "o if she sells shells on the seashore, Im sure she sells seashore shells.";
             this.letterToEncodeTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.letterToEncodeTextBox_KeyUp);
             // 
             // label1
@@ -74,27 +78,45 @@ namespace AdaptiveHuffmanTree
             this.label1.Location = new System.Drawing.Point(4, 16);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(110, 17);
+            this.label1.Size = new System.Drawing.Size(98, 17);
             this.label1.TabIndex = 1;
-            this.label1.Text = "Letter to send";
+            this.label1.Text = "Text to send";
             // 
             // panel1
             // 
             this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.clearButton);
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.addLetterButton);
+            this.panel1.Controls.Add(this.sendTextButton);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.letterToEncodeTextBox);
             this.panel1.ForeColor = System.Drawing.Color.Black;
             this.panel1.Location = new System.Drawing.Point(13, 16);
             this.panel1.Margin = new System.Windows.Forms.Padding(4);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1540, 188);
+            this.panel1.Size = new System.Drawing.Size(1540, 274);
             this.panel1.TabIndex = 2;
+            // 
+            // clearButton
+            // 
+            this.clearButton.BackColor = System.Drawing.Color.DarkSlateGray;
+            this.clearButton.Enabled = false;
+            this.clearButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.clearButton.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.clearButton.ForeColor = System.Drawing.Color.White;
+            this.clearButton.Location = new System.Drawing.Point(7, 214);
+            this.clearButton.Margin = new System.Windows.Forms.Padding(4);
+            this.clearButton.Name = "clearButton";
+            this.clearButton.Size = new System.Drawing.Size(203, 45);
+            this.clearButton.TabIndex = 6;
+            this.clearButton.Text = "CLEAR";
+            this.clearButton.UseVisualStyleBackColor = false;
+            this.clearButton.Click += new System.EventHandler(this.Button1_Click);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.drawTreeInRealTimeCheckbox);
             this.groupBox1.Controls.Add(this.averageCodewordLengthTextBox);
             this.groupBox1.Controls.Add(this.label6);
             this.groupBox1.Controls.Add(this.entropyTextBox);
@@ -104,17 +126,27 @@ namespace AdaptiveHuffmanTree
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.enteredTextBox);
             this.groupBox1.Controls.Add(this.label3);
-            this.groupBox1.Location = new System.Drawing.Point(240, 12);
+            this.groupBox1.Location = new System.Drawing.Point(240, 3);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1283, 166);
+            this.groupBox1.Size = new System.Drawing.Size(1283, 264);
             this.groupBox1.TabIndex = 5;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Results";
             // 
+            // drawTreeInRealTimeCheckbox
+            // 
+            this.drawTreeInRealTimeCheckbox.AutoSize = true;
+            this.drawTreeInRealTimeCheckbox.Location = new System.Drawing.Point(574, 52);
+            this.drawTreeInRealTimeCheckbox.Name = "drawTreeInRealTimeCheckbox";
+            this.drawTreeInRealTimeCheckbox.Size = new System.Drawing.Size(197, 25);
+            this.drawTreeInRealTimeCheckbox.TabIndex = 10;
+            this.drawTreeInRealTimeCheckbox.Text = "Draw Tree In Real Time";
+            this.drawTreeInRealTimeCheckbox.UseVisualStyleBackColor = true;
+            // 
             // averageCodewordLengthTextBox
             // 
             this.averageCodewordLengthTextBox.Enabled = false;
-            this.averageCodewordLengthTextBox.Location = new System.Drawing.Point(540, 120);
+            this.averageCodewordLengthTextBox.Location = new System.Drawing.Point(574, 228);
             this.averageCodewordLengthTextBox.Name = "averageCodewordLengthTextBox";
             this.averageCodewordLengthTextBox.Size = new System.Drawing.Size(192, 28);
             this.averageCodewordLengthTextBox.TabIndex = 8;
@@ -122,7 +154,7 @@ namespace AdaptiveHuffmanTree
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(536, 93);
+            this.label6.Location = new System.Drawing.Point(570, 204);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(197, 21);
             this.label6.TabIndex = 7;
@@ -131,7 +163,7 @@ namespace AdaptiveHuffmanTree
             // entropyTextBox
             // 
             this.entropyTextBox.Enabled = false;
-            this.entropyTextBox.Location = new System.Drawing.Point(540, 52);
+            this.entropyTextBox.Location = new System.Drawing.Point(574, 153);
             this.entropyTextBox.Name = "entropyTextBox";
             this.entropyTextBox.Size = new System.Drawing.Size(192, 28);
             this.entropyTextBox.TabIndex = 6;
@@ -139,7 +171,7 @@ namespace AdaptiveHuffmanTree
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(536, 28);
+            this.label5.Location = new System.Drawing.Point(570, 129);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(65, 21);
             this.label5.TabIndex = 5;
@@ -154,9 +186,9 @@ namespace AdaptiveHuffmanTree
             this.columnHeader4,
             this.columnHeader5,
             this.columnHeader6});
-            this.lettersListView.Location = new System.Drawing.Point(756, 25);
+            this.lettersListView.Location = new System.Drawing.Point(787, 27);
             this.lettersListView.Name = "lettersListView";
-            this.lettersListView.Size = new System.Drawing.Size(490, 123);
+            this.lettersListView.Size = new System.Drawing.Size(490, 234);
             this.lettersListView.TabIndex = 4;
             this.lettersListView.UseCompatibleStateImageBehavior = false;
             this.lettersListView.View = System.Windows.Forms.View.Details;
@@ -190,37 +222,39 @@ namespace AdaptiveHuffmanTree
             // 
             // encodedTextBox
             // 
-            this.encodedTextBox.Enabled = false;
-            this.encodedTextBox.Location = new System.Drawing.Point(6, 120);
+            this.encodedTextBox.Location = new System.Drawing.Point(6, 141);
+            this.encodedTextBox.Multiline = true;
             this.encodedTextBox.Name = "encodedTextBox";
-            this.encodedTextBox.Size = new System.Drawing.Size(507, 28);
+            this.encodedTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.encodedTextBox.Size = new System.Drawing.Size(541, 115);
             this.encodedTextBox.TabIndex = 3;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(2, 96);
+            this.label4.Location = new System.Drawing.Point(2, 117);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(103, 21);
+            this.label4.Size = new System.Drawing.Size(104, 21);
             this.label4.TabIndex = 2;
-            this.label4.Text = "Encoded text";
+            this.label4.Text = "Encoded Text";
             // 
             // enteredTextBox
             // 
             this.enteredTextBox.Enabled = false;
-            this.enteredTextBox.Location = new System.Drawing.Point(10, 52);
+            this.enteredTextBox.Location = new System.Drawing.Point(6, 52);
+            this.enteredTextBox.Multiline = true;
             this.enteredTextBox.Name = "enteredTextBox";
-            this.enteredTextBox.Size = new System.Drawing.Size(503, 28);
+            this.enteredTextBox.Size = new System.Drawing.Size(541, 62);
             this.enteredTextBox.TabIndex = 1;
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(6, 28);
+            this.label3.Location = new System.Drawing.Point(6, 30);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(99, 21);
+            this.label3.Size = new System.Drawing.Size(100, 21);
             this.label3.TabIndex = 0;
-            this.label3.Text = "Entered text";
+            this.label3.Text = "Entered Text";
             // 
             // label2
             // 
@@ -231,26 +265,26 @@ namespace AdaptiveHuffmanTree
             this.label2.TabIndex = 4;
             this.label2.Text = "label2";
             // 
-            // addLetterButton
+            // sendTextButton
             // 
-            this.addLetterButton.BackColor = System.Drawing.Color.DarkSlateGray;
-            this.addLetterButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.addLetterButton.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
-            this.addLetterButton.ForeColor = System.Drawing.Color.White;
-            this.addLetterButton.Location = new System.Drawing.Point(7, 105);
-            this.addLetterButton.Margin = new System.Windows.Forms.Padding(4);
-            this.addLetterButton.Name = "addLetterButton";
-            this.addLetterButton.Size = new System.Drawing.Size(203, 73);
-            this.addLetterButton.TabIndex = 3;
-            this.addLetterButton.Text = "ADD LETTER";
-            this.addLetterButton.UseVisualStyleBackColor = false;
-            this.addLetterButton.Click += new System.EventHandler(this.addLetterButton_Click);
+            this.sendTextButton.BackColor = System.Drawing.Color.DarkSlateGray;
+            this.sendTextButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.sendTextButton.Font = new System.Drawing.Font("Calibri", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.sendTextButton.ForeColor = System.Drawing.Color.White;
+            this.sendTextButton.Location = new System.Drawing.Point(7, 161);
+            this.sendTextButton.Margin = new System.Windows.Forms.Padding(4);
+            this.sendTextButton.Name = "sendTextButton";
+            this.sendTextButton.Size = new System.Drawing.Size(203, 45);
+            this.sendTextButton.TabIndex = 3;
+            this.sendTextButton.Text = "SEND TEXT";
+            this.sendTextButton.UseVisualStyleBackColor = false;
+            this.sendTextButton.Click += new System.EventHandler(this.sendTextButton_Click);
             // 
             // treePictureBox
             // 
-            this.treePictureBox.Location = new System.Drawing.Point(12, 211);
+            this.treePictureBox.Location = new System.Drawing.Point(12, 297);
             this.treePictureBox.Name = "treePictureBox";
-            this.treePictureBox.Size = new System.Drawing.Size(1541, 840);
+            this.treePictureBox.Size = new System.Drawing.Size(1541, 754);
             this.treePictureBox.TabIndex = 3;
             this.treePictureBox.TabStop = false;
             this.treePictureBox.Paint += new System.Windows.Forms.PaintEventHandler(this.treePictureBox_Paint);
@@ -283,7 +317,7 @@ namespace AdaptiveHuffmanTree
         private System.Windows.Forms.TextBox letterToEncodeTextBox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button addLetterButton;
+        private System.Windows.Forms.Button sendTextButton;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.TextBox enteredTextBox;
@@ -302,6 +336,8 @@ namespace AdaptiveHuffmanTree
         private TextBox entropyTextBox;
         private Label label5;
         private PictureBox treePictureBox;
+        private Button clearButton;
+        private CheckBox drawTreeInRealTimeCheckbox;
     }
 }
 
