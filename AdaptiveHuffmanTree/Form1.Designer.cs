@@ -222,6 +222,7 @@ namespace AdaptiveHuffmanTree
             // 
             // encodedTextBox
             // 
+            this.encodedTextBox.Enabled = false;
             this.encodedTextBox.Location = new System.Drawing.Point(6, 141);
             this.encodedTextBox.Multiline = true;
             this.encodedTextBox.Name = "encodedTextBox";
